@@ -1,0 +1,17 @@
+{
+  "name": "qa-assessment-bot",
+  "version": "1.0.0",
+  "description": "interview bot for qa engineers from T1 holding",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Alexander Libaur",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "grammy": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "typescript": "^5.5.4"
+  }
+}
