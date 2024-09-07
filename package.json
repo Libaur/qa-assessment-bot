@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "interview bot for qa engineers from T1 holding",
   "main": "index.js",
+  "type": "module",
   "scripts": {},
   "author": "Alexander Libaur",
   "license": "ISC",
@@ -12,6 +13,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.5.4",
+    "@types/node-fetch": "^2.6.11",
     "typescript": "^5.5.4"
   }
 }
