@@ -1,7 +1,7 @@
 import { Bot, Keyboard, InlineKeyboard, GrammyError, HttpError } from "grammy";
 import { getToken } from "./config";
 import { KEYBOARD_BUTTONS, REPLIES, ERRORS } from "./constants/messages";
-import { getRandomQuestion } from "./utils";
+import { getRandomQuestion, convertTopicTitleToCode } from "./utils";
 
 const { BASE, PROCESS, TECHICAL, EXPERTISE } =
   KEYBOARD_BUTTONS.QUESTIONS_OPTIONS;
@@ -9,6 +9,13 @@ const { BASE, PROCESS, TECHICAL, EXPERTISE } =
 const bot = new Bot(getToken());
 
 bot.command("start", async (ctx) => {
+  const inlineKeyboard = new InlineKeyboard()
+    .text(KEYBOARD_BUTTONS.START_OPTIONS.BREAKING_BAD, "breakingBad")
+    .text(KEYBOARD_BUTTONS.START_OPTIONS.NOT_SHURE, "notShure");
+  await ctx.reply(REPLIES.GREETINGS, { reply_markup: inlineKeyboard });
+});
+
+bot.callbackQuery(["breakingBad", "notShure"], async (ctx) => {
   const startKeyboard = new Keyboard()
     .text(BASE)
     .text(PROCESS)
@@ -16,18 +23,17 @@ bot.command("start", async (ctx) => {
     .text(TECHICAL)
     .text(EXPERTISE)
     .resized();
-  await ctx.reply(REPLIES.GREETINGS);
   await ctx.reply(REPLIES.QUESTION_SELECTION, { reply_markup: startKeyboard });
 });
 
 bot.hears([BASE, PROCESS, TECHICAL, EXPERTISE], async (ctx) => {
-  const currentTopic = ctx.message?.text;
+  const currentTopic = convertTopicTitleToCode(ctx.message?.text ?? "base");
   const currentQuestion = getRandomQuestion(currentTopic ?? "base");
   const inlineKeyboard = new InlineKeyboard()
     .text(
       "Узнать ответ",
       JSON.stringify({
-        questionType: ctx.message?.text,
+        questionType: currentTopic,
         questionId: currentQuestion.id,
       })
     )
@@ -45,7 +51,7 @@ bot.on("callback_query:data", async (ctx) => {
     return;
   }
   const callbackData = JSON.parse(ctx.callbackQuery.data);
-  await ctx.reply(callbackData.questionType + REPLIES.TOPIC_SELECTED);
+  await ctx.reply(REPLIES.TEMP_ANSWER);
   await ctx.answerCallbackQuery();
 });
 
