@@ -1,7 +1,7 @@
 import { Bot, Keyboard, InlineKeyboard, GrammyError, HttpError } from "grammy";
-import { getToken } from "./config";
-import { KEYBOARD_BUTTONS, REPLIES, ERRORS } from "./constants/messages";
-import { getRandomQuestion, convertTopicTitleToCode } from "./utils";
+import { getToken } from "./config/index.ts";
+import { KEYBOARD_BUTTONS, REPLIES, ERRORS } from "./constants/index.ts";
+import { getRandomQuestion, convertTopicTitleToCode } from "./utils/index.ts";
 
 const { BASE, PROCESS, TECHICAL, EXPERTISE } =
   KEYBOARD_BUTTONS.QUESTIONS_OPTIONS;
@@ -29,30 +29,29 @@ bot.callbackQuery(["breakingBad", "notShure"], async (ctx) => {
 bot.hears([BASE, PROCESS, TECHICAL, EXPERTISE], async (ctx) => {
   const currentTopic = convertTopicTitleToCode(ctx.message?.text ?? "base");
   const currentQuestion = getRandomQuestion(currentTopic ?? "base");
-  const inlineKeyboard = new InlineKeyboard()
-    .text(
-      "Узнать ответ",
-      JSON.stringify({
-        questionType: currentTopic,
-        questionId: currentQuestion.id,
-      })
-    )
-    .text("Отмена", "cancel");
-  await ctx.reply(REPLIES.LETS_START + ctx.message?.text ?? REPLIES.SPECIFIC);
+  const buttonRows = currentQuestion.options.map((option) => [
+    InlineKeyboard.text(
+      option.text,
+      JSON.stringify({ isCorrect: option.isCorrect })
+    ),
+  ]);
+  const inlineKeyboard = InlineKeyboard.from(buttonRows);
   await ctx.reply(currentQuestion.text, {
     reply_markup: inlineKeyboard,
   });
 });
 
 bot.on("callback_query:data", async (ctx) => {
-  if (ctx.callbackQuery.data === "cancel") {
-    await ctx.reply("Отменено");
-    await ctx.answerCallbackQuery();
-    return;
-  }
   const callbackData = JSON.parse(ctx.callbackQuery.data);
-  await ctx.reply(REPLIES.TEMP_ANSWER);
-  await ctx.answerCallbackQuery();
+  if (!callbackData.isCorrect) {
+    await ctx.answerCallbackQuery({
+      text: REPLIES.WRONG_ANSWER,
+      show_alert: true,
+    });
+  } else {
+    await ctx.answerCallbackQuery({ text: REPLIES.RIGHT_ANSWER });
+    await ctx.reply(REPLIES.ANOTHER_QUESTION_SELECTION);
+  }
 });
 
 bot.catch((err) => {

@@ -16,3 +16,9 @@ export interface Questions {
   technical: Question[];
   expertise: Question[];
 }
+
+export interface CallbackQueryData {
+  questionId: number;
+  questionType: string;
+  isCorrect: boolean;
+}

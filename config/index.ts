@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { ERRORS } from "../constants/messages";
+import { ERRORS } from "../constants/index.ts";
 
 dotenv.config();
 

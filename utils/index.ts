@@ -1,6 +1,6 @@
-import data from "../questions.json";
-import { Questions } from "contracts";
-import { KEYBOARD_BUTTONS } from "../constants/messages";
+import data from "../questions.json" assert { type: "json" };
+import { Questions } from "contracts/index.ts";
+import { KEYBOARD_BUTTONS } from "../constants/index.ts";
 
 const questions: Questions = data;
 
@@ -10,6 +10,14 @@ function getRandomQuestion(topicTitle: string) {
   );
   return questions[topicTitle as keyof Questions][randomQuestionIndex];
 }
+
+// function getAnswer(currentTopic: string, currentiId: number) {
+//   const question = questions[currentTopic as keyof Questions].find(
+//     (question) => (question.id === currentiId)
+//   );
+//   if (!question) return null;
+
+// }
 
 function convertTopicTitleToCode(topicTitle: string) {
   switch (true) {
