@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "dist/main.cjs",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/webhook",
+        "methods": ["POST"],
+        "dest": "dist/main.cjs"
+      }
+    ],
+    "outputDirectory": "dist" 
+  }
