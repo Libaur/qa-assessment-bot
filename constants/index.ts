@@ -8,6 +8,7 @@ const KEYBOARD_BUTTONS = {
     PROCESS: "Процессы и методологии",
     TECHICAL: "Инструменты и технологии",
     EXPERTISE: "Личные качества и опыт",
+    RANDOM: "Случайный вопрос",
   },
 };
 

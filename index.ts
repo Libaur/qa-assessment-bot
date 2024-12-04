@@ -3,7 +3,7 @@ import { getToken } from "./config/index.ts";
 import { KEYBOARD_BUTTONS, REPLIES, ERRORS } from "./constants/index.ts";
 import { getRandomQuestion, convertTopicTitleToCode } from "./utils/index.ts";
 
-const { BASE, PROCESS, TECHICAL, EXPERTISE } =
+const { BASE, PROCESS, TECHICAL, EXPERTISE, RANDOM } =
   KEYBOARD_BUTTONS.QUESTIONS_OPTIONS;
 
 const bot = new Bot(getToken());
@@ -22,11 +22,13 @@ bot.callbackQuery(["breakingBad", "notShure"], async (ctx) => {
     .row()
     .text(TECHICAL)
     .text(EXPERTISE)
+    .row()
+    .text(RANDOM)
     .resized();
   await ctx.reply(REPLIES.QUESTION_SELECTION, { reply_markup: startKeyboard });
 });
 
-bot.hears([BASE, PROCESS, TECHICAL, EXPERTISE], async (ctx) => {
+bot.hears([BASE, PROCESS, TECHICAL, EXPERTISE, RANDOM], async (ctx) => {
   const currentTopic = convertTopicTitleToCode(ctx.message?.text ?? "base");
   const currentQuestion = getRandomQuestion(currentTopic ?? "base");
   const buttonRows = currentQuestion.options.map((option) => [
